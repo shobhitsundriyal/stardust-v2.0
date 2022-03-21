@@ -15,7 +15,7 @@ function Sidebar() {
 				console.log('Make sure you have metamask')
 				return
 			} else {
-				console.log('Ethereum object is present')
+				// console.log('Ethereum object is present')
 			}
 
 			/*
@@ -24,7 +24,7 @@ function Sidebar() {
 			const accounts = await ethereum.request({ method: 'eth_accounts' }) //checks if any account is connected
 			if (accounts.length !== 0) {
 				const account = accounts[0]
-				console.log('Found an authorized account:', account)
+				// console.log('Found an authorized account:', account)
 				setCurrentAccount(account)
 			} else {
 				console.log('No authorized account found')
