@@ -30,7 +30,7 @@ function Dashboard() {
 	var yyyy = today.getFullYear()
 
 	today = yyyy + '-' + mm + '-' + dd
-	console.log(today)
+	// console.log(today)
 
 	// data to send
 	const [collectioName, setCollectionName] = useState('-')
@@ -54,9 +54,15 @@ function Dashboard() {
 		setCurrFloor(defaultData.current_7day_floor_price)
 		setNoTokens(defaultData.number_nfts_in_collection)
 		setLineChartDate(defaultData.floor_price_hist.reverse())
+		// setLineChartDate()
 		let minted = 0,
 			transfered = 0
 		let nftData
+
+		let otherLineData = []
+		let dates = []
+		let count = 0
+		let isFirst = true
 		await axios.get(nftDataUrl).then((resp) => {
 			// resp.data
 			nftData = Papa.parse(resp.data, { header: true }).data
@@ -65,10 +71,28 @@ function Dashboard() {
 				if (item['to'] === ENSAddr || item['from'] === ENSAddr) {
 					// console.log('ll')
 					item.value > 0 ? (minted += 1) : (transfered += 1)
+					// isFirst && dates.push(item.block_timestamp.substring(0, 11))
+
+					if (
+						dates != [] &&
+						dates.includes(item.block_timestamp.substring(0, 11))
+					) {
+						count += 1
+					} else {
+						otherLineData.push({
+							transactions: count,
+							date: dates[dates.length - 1],
+						})
+						count = 0
+						dates.push(item.block_timestamp.substring(0, 11))
+					}
+					// console.log(item.block_timestamp.substring(0, 11))
+					console.log(otherLineData)
 				}
 			})
 			console.log(minted, transfered)
 
+			setLineChartDate(otherLineData)
 			setPieChartData([
 				{ sentiment: 'positive', value: minted },
 				{ sentiment: 'negetive', value: transfered },
@@ -84,7 +108,7 @@ function Dashboard() {
 				`${process.env.REACT_APP_COVALANT_URL}${chainId}/tokens/${ENSAddr}/nft_token_ids/?key=${process.env.REACT_APP_COVALANT_API_KEY}`
 			)
 			.then((resp) => {
-				console.log(resp.data.data.items[0])
+				// console.log(resp.data.data.items[0])
 				let contractMeta = resp.data.data.items[0]
 				setCollectionName(contractMeta.contract_name)
 				setSymbol(contractMeta.contract_ticker_symbol)
@@ -101,7 +125,7 @@ function Dashboard() {
 					resp.data.data.items[0].unique_token_ids_sold_count_day
 				)
 			})
-		console.log(lineChartData)
+		// console.log(lineChartData, 'llll')
 	}, [])
 
 	async function submitForm(e) {
@@ -145,6 +169,10 @@ function Dashboard() {
 		let minted = 0,
 			transfered = 0
 		let nftData
+		let otherLineData = []
+		let dates = []
+		let count = 0
+		let isFirst = true
 		await axios.get(nftDataUrl).then((resp) => {
 			// resp.data
 			nftData = Papa.parse(resp.data, { header: true }).data
@@ -155,6 +183,21 @@ function Dashboard() {
 				) {
 					// console.log('ll')
 					item.value > 0 ? (minted += 1) : (transfered += 1)
+					if (
+						dates != [] &&
+						dates.includes(item.block_timestamp.substring(0, 11))
+					) {
+						count += 1
+					} else {
+						otherLineData.push({
+							transactions: count,
+							date: dates[dates.length - 1],
+						})
+						count = 0
+						dates.push(item.block_timestamp.substring(0, 11))
+					}
+					// console.log(item.block_timestamp.substring(0, 11))
+					console.log(otherLineData)
 				}
 			})
 			console.log(minted, transfered)
@@ -176,6 +219,21 @@ function Dashboard() {
 				setSymbol(contractMeta.contract_ticker_symbol)
 				setLogoUrl(contractMeta.logo_url)
 			})
+
+		await axios
+			.get(
+				`${process.env.REACT_APP_COVALANT_URL}${chainId}/nft_market/collection/${contractSearch}/?quote-currency=USD&format=JSON&from=${today}&to=${today}&key=${process.env.REACT_APP_COVALANT_API_KEY}`
+			)
+			.then((resp) => {
+				setCurrFloor(resp.data.data.items[0].floor_price_quote_7d)
+				setNoTokens(
+					resp.data.data.items[0].unique_token_ids_sold_count_day
+				)
+			})
+			.catch((err) => {
+				setNoTokens(0)
+				setCurrFloor('Very few datapoints')
+			})
 		e.target[1].value = ''
 	}
 
@@ -188,7 +246,7 @@ function Dashboard() {
 		>
 			<Line
 				type='monotone'
-				dataKey='floor_price_quote_7d'
+				dataKey='transactions'
 				stroke='#8884d8'
 				strokeWidth={2}
 				dot={false}
