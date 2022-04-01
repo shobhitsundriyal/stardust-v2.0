@@ -79,15 +79,19 @@ function Dashboard() {
 					) {
 						count += 1
 					} else {
-						otherLineData.push({
-							transactions: count,
-							date: dates[dates.length - 1],
-						})
+						// count = +1
+						if (dates[dates.length - 1]) {
+							otherLineData.push({
+								transactions: count,
+								date: dates[dates.length - 1],
+							})
+						}
 						count = 0
 						dates.push(item.block_timestamp.substring(0, 11))
+						console.log(item.block_timestamp.substring(0, 11))
 					}
 					// console.log(item.block_timestamp.substring(0, 11))
-					console.log(otherLineData)
+					console.log(otherLineData, 'eewooiuee')
 				}
 			})
 			console.log(minted, transfered)
@@ -232,7 +236,7 @@ function Dashboard() {
 			})
 			.catch((err) => {
 				setNoTokens(0)
-				setCurrFloor('Very few datapoints')
+				setCurrFloor(-999)
 			})
 		e.target[1].value = ''
 	}
@@ -242,6 +246,7 @@ function Dashboard() {
 			width={600}
 			height={400}
 			data={lineChartData}
+			// YAxis={lineChartData}
 			margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
 		>
 			<Line
@@ -252,7 +257,7 @@ function Dashboard() {
 				dot={false}
 			/>
 			{/* <CartesianGrid stroke='#ccc' strokeDasharray='5 5' /> */}
-			<XAxis dataKey='opening_date' minTickGap={15} />
+			<XAxis dataKey='date' minTickGap={15} />
 			<YAxis />
 			<Tooltip />
 		</LineChart>
@@ -335,8 +340,12 @@ function Dashboard() {
 					<Card title={'Symbol'} data={symbol} />
 					<Card
 						title={'Avg. 7d Price'}
-						data={currFloor}
-						extraData={'USD'}
+						data={
+							currFloor == -999
+								? 'Very few datapoints'
+								: currFloor
+						}
+						extraData={currFloor == -999 ? '' : 'USD'}
 					/>
 					<Card
 						title={'Unique tokens Sold Yesterday'}
@@ -347,7 +356,7 @@ function Dashboard() {
 				<div className='flex mt-10 space-x-16'>
 					<div className='w-[50rem] bg-[#181E4D] rounded-md shadow-xl p-3 flex items-center'>
 						{renderLineChart}
-						<span className='text-white'>Floor Price in USD</span>
+						<span className='text-white'>No of transactions</span>
 					</div>
 					<div className='w-[17rem] bg-white rounded-md shadow-xl p-3'>
 						<div className='text-gray-600 text-sm'>
