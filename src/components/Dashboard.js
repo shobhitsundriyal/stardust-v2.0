@@ -136,40 +136,6 @@ function Dashboard() {
 		e.preventDefault()
 		let contractSearch = e.target[1].value
 		let chainId = e.target[0].value
-		{
-			// axios
-			// 	.get(
-			// 		'http://34.211.151.159:8080/nft/collection?chain_id=' +
-			// 			chainId +
-			// 			'&collection_address=' +
-			// 			contractSearch
-			// 	)
-			// 	.then((resp) => {
-			// 		console.log(resp.data)
-			// 		setCollectionName(resp.data.collection_name)
-			// 		setSymbol(resp.data.collection_ticker_symbol)
-			// 		setCurrFloor(resp.data.current_7day_floor_price)
-			// 		setNoTokens(resp.data.number_nfts_in_collection)
-			// 		setLineChartDate(resp.data.floor_price_hist.reverse())
-			// 		//get sentiments
-			// 		axios
-			// 			.get(sentimentUrl + collectioName)
-			// 			.then((resp) => {
-			// 				console.log(resp)
-			// 				let pos = resp.data.classifications.filter(
-			// 					(obj) => obj.classification === 'Positive'
-			// 				).length
-			// 				let neg = resp.data.classifications.filter(
-			// 					(obj) => obj.classification === 'Negative'
-			// 				).length
-			// 				setPieChartData([
-			// 					{ sentiment: 'positive', value: pos },
-			// 					{ sentiment: 'negetive', value: neg },
-			// 				])
-			// 			})
-			// 			.catch((err) => console.log(err))
-			// 	})
-		}
 		let minted = 0,
 			transfered = 0
 		let nftData
