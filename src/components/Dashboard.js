@@ -88,7 +88,7 @@ function Dashboard() {
 						}
 						count = 0
 						dates.push(item.block_timestamp.substring(0, 11))
-						console.log(item.block_timestamp.substring(0, 11))
+						// console.log(item.block_timestamp.substring(0, 11))
 					}
 					// console.log(item.block_timestamp.substring(0, 11))
 					console.log(otherLineData, 'eewooiuee')
@@ -201,10 +201,11 @@ function Dashboard() {
 						dates.push(item.block_timestamp.substring(0, 11))
 					}
 					// console.log(item.block_timestamp.substring(0, 11))
-					console.log(otherLineData)
 				}
 			})
 			console.log(minted, transfered)
+			console.log(otherLineData)
+			setLineChartDate(otherLineData)
 
 			setPieChartData([
 				{ sentiment: 'positive', value: minted },
@@ -217,8 +218,9 @@ function Dashboard() {
 				`${process.env.REACT_APP_COVALANT_URL}${chainId}/tokens/${contractSearch}/nft_token_ids/?key=${process.env.REACT_APP_COVALANT_API_KEY}`
 			)
 			.then((resp) => {
-				// console.log(resp.data.data.items[0])
+				// console.log(resp.data)
 				let contractMeta = resp.data.data.items[0]
+				// console.log(contractMeta, 'mata')
 				setCollectionName(contractMeta.contract_name)
 				setSymbol(contractMeta.contract_ticker_symbol)
 				setLogoUrl(contractMeta.logo_url)
@@ -263,14 +265,18 @@ function Dashboard() {
 		</LineChart>
 	)
 
+	useEffect(() => {
+		console.log(lineChartData, 'side effect')
+	}, [lineChartData])
+
 	const dataList =
 		selectedChainId == 1 ? (
 			<datalist id='contracts'>
 				<option value='0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85'>
 					Ethereum Name Service
 				</option>
-				<option value='0x4eBC94fd959d2C4B33Ca75963c6b5E95b7bF4a21'>
-					Loius Vitton{' '}
+				<option value='0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'>
+					Bored Apes{' '}
 				</option>
 				<option value='0xd03D2A00148e01FcFfe00E2EC6e94192c35fc0a3'>
 					Gucci
